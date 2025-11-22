@@ -1,25 +1,29 @@
-name: Deploy static site to Azure Web App - az204-test-pb
+name: Node.js Azure Deploy
 
 on:
   push:
     branches:
-      - main  # your branch
-  workflow_dispatch:
+      - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout your repo
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      # 2️⃣ Deploy to Azure
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'az204-test-pb'       # your App Service name
-          slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CA606546F34746BB9C4FAD1E3D1218A1 }}
+          app-name: 'az204-test-pb'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
+
