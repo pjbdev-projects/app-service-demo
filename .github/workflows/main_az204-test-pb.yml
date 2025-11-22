@@ -1,29 +1,32 @@
-name: Node.js Azure Deploy
+name: Deploy Node.js App to Azure
 
 on:
   push:
     branches:
-      - main
+      - main  # or your default branch
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '20'  # matches your Azure Node.js runtime
 
       - name: Install dependencies
         run: npm install
 
+      - name: Build (if needed)
+        run: npm run build || echo "No build step"
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'az204-test-pb'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          app-name: 'az204-test-pb'  # your web app name
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CA606546F34746BB9C4FAD1E3D1218A1 }}
           package: .
-
